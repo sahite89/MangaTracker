@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="MangaTracker.Api/MangaTracker.Api.csproj" />
+  <Project Path="MangaTracker.Application/MangaTracker.Application.csproj" />
+  <Project Path="MangaTracker.Domain/MangaTracker.Domain.csproj" />
+  <Project Path="MangaTracker.Infrastructure/MangaTracker.Infrastructure.csproj" />
+</Solution>
