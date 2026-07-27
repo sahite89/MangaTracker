@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MangaTracker.Application.Contracts.Persistence
 {
-    public interface IAsyncUser: IAsyncRepository<User>
+    public interface IUserRepository: IAsyncRepository<User>
     {
         Task<User> GetUserByEmailAsync(string email);
     }

@@ -1,4 +1,5 @@
-﻿using MangaTracker.Application.Contracts.Persistence;
+﻿using MangaTracker.Application.Contracts.Infrastructure;
+using MangaTracker.Application.Contracts.Persistence;
 using MangaTracker.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -8,11 +9,13 @@ namespace MangaTracker.Application.Features.Users.RegisterUser
 {
     public class RegisterUserCommandHandler
     {
-        private readonly IAsyncUser _userRepository;
-        
-        public RegisterUserCommandHandler(IAsyncUser userRepository)
+        private readonly IUserRepository _userRepository;
+        private readonly IPasswordHasher _passwordHasher;
+
+        public RegisterUserCommandHandler(IUserRepository userRepository, IPasswordHasher passwordHasher)
         {
             _userRepository = userRepository;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<RegisterUserCommandResponse> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
@@ -41,7 +44,7 @@ namespace MangaTracker.Application.Features.Users.RegisterUser
                 Id = Guid.NewGuid(),
                 UserName = request.UserName,
                 Email = request.Email,
-                //PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password) // Hash the password
+                PasswordHash = _passwordHasher.Hash(request.Password)
             };
             // Save the new user to the repository
             var createdUser = await _userRepository.AddAsync(newUser);
