@@ -18,7 +18,7 @@ namespace MangaTracker.Application.Features.Users.RegisterUser
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<RegisterUserCommandResponse> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+        public async Task<RegisterUserCommandResponse> HandleAsync(RegisterUserCommand request, CancellationToken cancellationToken)
         {
             var response = new RegisterUserCommandResponse();
             var validationResult = new RegisterUserCommandValidator().Validate(request);
@@ -49,7 +49,7 @@ namespace MangaTracker.Application.Features.Users.RegisterUser
             // Save the new user to the repository
             var createdUser = await _userRepository.AddAsync(newUser);
             // Prepare the response DTO
-            response.registerUserDto = new RegisterUserDto
+            response.RegisterUserDto = new RegisterUserDto
             {
                 UserId = createdUser.Id,
                 UserName = createdUser.UserName

@@ -18,14 +18,18 @@ namespace MangaTracker.Infrastructure.Persistence.Configurations
 
             builder.Property(e => e.UserName)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(50);
 
             builder.Property(e => e.Email)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(255);
 
             builder.HasIndex(e => e.Email)
                 .IsUnique();
+
+            builder.Property(e => e.PasswordHash)
+                .IsRequired()
+                .HasMaxLength(255);
         }
     }
 }

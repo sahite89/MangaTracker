@@ -11,6 +11,6 @@ namespace MangaTracker.Application.Features.Users.RegisterUser
         {
         }
 
-        public RegisterUserDto registerUserDto { get; set; } = default!;
+        public RegisterUserDto? RegisterUserDto { get; set; }
     }
 }
