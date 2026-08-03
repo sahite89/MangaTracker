@@ -3,4 +3,5 @@
   <Project Path="MangaTracker.Application/MangaTracker.Application.csproj" />
   <Project Path="MangaTracker.Domain/MangaTracker.Domain.csproj" />
   <Project Path="MangaTracker.Infrastructure/MangaTracker.Infrastructure.csproj" />
+  <Project Path="MangaTracker.Test/MangaTracker.Test.csproj" Id="302d5f13-5c81-461c-8015-fc26982c456c" />
 </Solution>
