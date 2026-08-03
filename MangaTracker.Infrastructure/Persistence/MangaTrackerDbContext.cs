@@ -14,6 +14,8 @@ namespace MangaTracker.Infrastructure.Persistence
         public DbSet<User> Users { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(MangaTrackerDbContext).Assembly);
+
             base.OnModelCreating(modelBuilder);
             // Configure your entity mappings here
         }

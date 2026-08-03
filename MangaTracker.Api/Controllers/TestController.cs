@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
+using MangaTracker.Infrastructure;
+using MangaTracker.Infrastructure.Persistence;
+using MangaTracker.Domain.Entities;
 namespace MangaTracker.Api.Controllers
 {
     [ApiController]

@@ -12,6 +12,8 @@ namespace MangaTracker.Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<User> builder)
         {
 
+            builder.ToTable("Users");
+
             builder.HasKey(x => x.Id);
 
             builder.Property(e => e.UserName)
