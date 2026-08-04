@@ -9,6 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+
 
 namespace MangaTracker.Infrastructure
 {
@@ -26,6 +29,26 @@ namespace MangaTracker.Infrastructure
             services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddScoped<IPasswordHasher,PasswordHasher>();
+
+            services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
+            services.AddScoped<IJwtProvider, JwtProvider>();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    var jwtSettings = configuration.GetSection("Jwt");
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+
+                        ValidIssuer = jwtSettings["Issuer"],
+                        ValidAudience = jwtSettings["Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!))
+                    };
+                });
 
             return services;
         }

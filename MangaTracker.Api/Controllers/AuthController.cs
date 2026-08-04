@@ -1,7 +1,10 @@
 ﻿using MangaTracker.Api.Models;
+using MangaTracker.Application.Features.Users.LoginUser;
 using MangaTracker.Application.Features.Users.RegisterUser;
 using MangaTracker.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace MangaTracker.Api.Controllers
 {
@@ -11,10 +14,12 @@ namespace MangaTracker.Api.Controllers
     {
 
         private readonly RegisterUserCommandHandler _registerUserCommandHandler;
+        private readonly LoginUserCommandHandler _loginUserCommandHandler;
 
-        public AuthController(RegisterUserCommandHandler registerUserCommandHandler)
+        public AuthController(RegisterUserCommandHandler registerUserCommandHandler, LoginUserCommandHandler loginUserCommandHandler)
         {
             _registerUserCommandHandler = registerUserCommandHandler;
+            _loginUserCommandHandler = loginUserCommandHandler;
         }
 
         [HttpPost("register")]
@@ -41,9 +46,41 @@ namespace MangaTracker.Api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login()
+        public async Task<IActionResult> Login(LoginUserRequest loginUser, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var loginUserCommand = new LoginUserCommand
+            {
+                Email = loginUser.Email,
+                Password = loginUser.Password
+            };
+
+            var userLoged = await _loginUserCommandHandler.HandleAsync(loginUserCommand, cancellationToken);
+            
+            if(!userLoged.Success)
+            {
+                return BadRequest(new
+                {
+                    userLoged.Message,
+                });
+            }
+
+            return Ok(userLoged);
+        }
+
+        [Authorize]
+        [HttpGet("me")]
+        public IActionResult Me()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
+
+            return Ok(new
+            {
+                UserId = userId,
+                Email = email,
+                UserName = userName
+            });
         }
     }
 }

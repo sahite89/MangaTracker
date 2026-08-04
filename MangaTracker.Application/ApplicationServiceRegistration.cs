@@ -1,4 +1,5 @@
-﻿using MangaTracker.Application.Features.Users.RegisterUser;
+﻿using MangaTracker.Application.Features.Users.LoginUser;
+using MangaTracker.Application.Features.Users.RegisterUser;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace MangaTracker.Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddScoped<RegisterUserCommandHandler>();
+            services.AddScoped<LoginUserCommandHandler>();
 
             return services;
         }
