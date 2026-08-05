@@ -66,21 +66,5 @@ namespace MangaTracker.Api.Controllers
 
             return Ok(userLoged);
         }
-
-        [Authorize]
-        [HttpGet("me")]
-        public IActionResult Me()
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var email = User.FindFirst(ClaimTypes.Email)?.Value;
-            var userName = User.FindFirst(ClaimTypes.Name)?.Value;
-
-            return Ok(new
-            {
-                UserId = userId,
-                Email = email,
-                UserName = userName
-            });
-        }
     }
 }
