@@ -26,7 +26,7 @@ namespace MangaTracker.Application.Features.Users.LoginUser
 
             if (user == null) { 
                 response.Success = false;
-                response.Message = "Invalid credencials";
+                response.Message = "Invalid credentials";
 
                 return response;
             }
