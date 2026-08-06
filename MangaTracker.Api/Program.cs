@@ -34,6 +34,8 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<MangaTrackerDbContext>();
     context.Database.Migrate();
+
+    await MangaTrackerDbInitializer.SeedAsync(context);
 }
 
 app.Run();

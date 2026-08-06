@@ -14,6 +14,7 @@ namespace MangaTracker.Infrastructure.Persistence
         public DbSet<User> Users { get; set; }
         public DbSet<UserCollection> UserCollections { get; set; }
         public DbSet<UserCollectionVolume> UserCollectionVolumes { get; set; }
+        public DbSet<Manga> Mangas { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
