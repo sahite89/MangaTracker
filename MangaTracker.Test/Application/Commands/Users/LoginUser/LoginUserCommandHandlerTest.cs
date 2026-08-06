@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace MangaTracker.Test.Application.Commands.LoginUser
+namespace MangaTracker.Test.Application.Commands.Users.LoginUser
 {
     public class LoginUserCommandHandlerTest
     {

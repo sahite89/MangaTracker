@@ -30,6 +30,8 @@ namespace MangaTracker.Infrastructure
 
             services.AddScoped<IPasswordHasher,PasswordHasher>();
 
+            services.AddScoped<IUserCollectionRepository, UserCollectionRepository> ();
+
             services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
             services.AddScoped<IJwtProvider, JwtProvider>();
 

@@ -2,7 +2,7 @@
 using FluentAssertions;
 using MangaTracker.Application.Features.Users.RegisterUser;
 
-namespace MangaTracker.Test.Application.Commands.RegisterUser
+namespace MangaTracker.Test.Application.Commands.Users.RegisterUser
 {
     public class RegisterUserCommandValidatorTests
     {

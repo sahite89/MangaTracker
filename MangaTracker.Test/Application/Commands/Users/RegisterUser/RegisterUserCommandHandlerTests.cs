@@ -6,7 +6,7 @@ using MangaTracker.Domain.Entities;
 using Moq;
 using Xunit;
 
-namespace MangaTracker.Test.Application.Commands.RegisterUser
+namespace MangaTracker.Test.Application.Commands.Users.RegisterUser
 {
     public class RegisterUserCommandHandlerTests
     {
