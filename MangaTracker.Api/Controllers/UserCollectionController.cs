@@ -1,5 +1,6 @@
-﻿using MangaTracker.Api.Models;
+﻿using MangaTracker.Api.Models.UserCollection;
 using MangaTracker.Application.Features.UserCollections.CreateUserCollection;
+using MangaTracker.Application.Features.UserCollections.GetUserCollectionList;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -11,18 +12,38 @@ namespace MangaTracker.Api.Controllers
     public class UserCollectionController : ControllerBase
     {
 
-        private readonly CreateUserCollectionCommandHandler _createUserCollectionHandler; 
+        private readonly CreateUserCollectionCommandHandler _createUserCollectionHandler;
+        private readonly GetUserCollectionListQueryHandler _getUserCollectionListHandler;
 
-        public UserCollectionController(CreateUserCollectionCommandHandler createUserCollectionHandler)
+        public UserCollectionController(CreateUserCollectionCommandHandler createUserCollectionHandler, GetUserCollectionListQueryHandler getUserCollectionListHandler)
         {
             _createUserCollectionHandler = createUserCollectionHandler;
+            _getUserCollectionListHandler = getUserCollectionListHandler;
         }
 
         [Authorize]
         [HttpGet("listCollection")]
-        public async Task<IActionResult> GetAllCollectionByUser()
+        public async Task<IActionResult> GetAllCollectionByUser(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var userCollectionListQuery = new GetUserCollectionListQuery
+            {
+                UserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value)
+            };
+
+            var userCollectionList = await _getUserCollectionListHandler.HandleAsync(userCollectionListQuery, cancellationToken);
+
+            if (!userCollectionList.Success)
+            {
+                return BadRequest(new
+                {
+                    userCollectionList.Success,
+                    userCollectionList.Message,
+                });
+            }
+            ;
+
+            return Ok(userCollectionList);
+
         }
 
         [Authorize]
@@ -46,8 +67,8 @@ namespace MangaTracker.Api.Controllers
                 });
             }
 
-            return Ok(userCollection);
+            return Created($"/api/userCollections/{userCollection.createUserCollectionDto}", userCollection);
         }
-        
+
     }
 }

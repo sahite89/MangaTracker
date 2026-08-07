@@ -1,4 +1,5 @@
 ﻿using MangaTracker.Application.Features.UserCollections.CreateUserCollection;
+using MangaTracker.Application.Features.UserCollections.GetUserCollectionList;
 using MangaTracker.Application.Features.Users.LoginUser;
 using MangaTracker.Application.Features.Users.RegisterUser;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +16,7 @@ namespace MangaTracker.Application
             services.AddScoped<RegisterUserCommandHandler>();
             services.AddScoped<LoginUserCommandHandler>();
             services.AddScoped<CreateUserCollectionCommandHandler>();
+            services.AddScoped<GetUserCollectionListQueryHandler>();
 
             return services;
         }

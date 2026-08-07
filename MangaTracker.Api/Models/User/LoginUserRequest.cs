@@ -1,4 +1,4 @@
-﻿namespace MangaTracker.Api.Models
+﻿namespace MangaTracker.Api.Models.User
 {
     public class LoginUserRequest
     {

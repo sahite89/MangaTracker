@@ -15,24 +15,10 @@ namespace MangaTracker.Infrastructure.Persistence
             }
 
             context.Mangas.AddRange(
-
-                new Manga
-                {
-                    Id = Guid.NewGuid(),
-                    Title = "One Piece",
-                    Publisher = "test",
-                    CoverUrl = "",
-                    TotalVolumes = 50,
-                },
-                new Manga
-                {
-                    Id = Guid.NewGuid(),
-                    Title = "Dragon Ball",
-                    Publisher = "test",
-                    CoverUrl = "",
-                    TotalVolumes = 100,
-                }
-
+                new Manga(Guid.NewGuid(), "One Piece", "test", 50, ""),
+                new Manga(Guid.NewGuid(), "Dragon Ball", "test", 100, ""),
+                new Manga(Guid.NewGuid(), "Naruto", "test", 20, ""),
+                new Manga(Guid.NewGuid(), "Haikyuu", "test", 36, "")
                 );
 
             await context.SaveChangesAsync();

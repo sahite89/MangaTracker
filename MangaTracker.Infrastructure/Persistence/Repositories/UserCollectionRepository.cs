@@ -11,6 +11,15 @@ namespace MangaTracker.Infrastructure.Persistence.Repositories
     {
         public UserCollectionRepository(MangaTrackerDbContext dbContext): base(dbContext) {}
 
+        public async Task<List<UserCollection>> GetAllCollectionByUserIdAsync(Guid userId)
+        {
+            return await _dbContext.UserCollections
+                .Include(x => x.Volumes)
+                .Include(x => x.Manga)
+                .Where(x => x.UserId == userId)
+                .ToListAsync();
+        }
+
         public async Task<UserCollection?> GetAsync(Guid userId, Guid mangaId)
         {
             return await _dbContext.UserCollections

@@ -1,10 +1,7 @@
-﻿using MangaTracker.Api.Models;
+﻿using MangaTracker.Api.Models.User;
 using MangaTracker.Application.Features.Users.LoginUser;
 using MangaTracker.Application.Features.Users.RegisterUser;
-using MangaTracker.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace MangaTracker.Api.Controllers
 {
