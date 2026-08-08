@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace MangaTracker.Test.Application.Commands.UserCollections.CreateUserCollection
+namespace MangaTracker.Test.Application.UserCollections.Commands.CreateUserCollection
 {
     public class CreateUserCollectionCommandHandlerTest
     {

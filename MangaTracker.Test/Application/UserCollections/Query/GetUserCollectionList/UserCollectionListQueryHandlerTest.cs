@@ -9,7 +9,7 @@ using System.Reflection.Metadata;
 using System.Text;
 using Xunit;
 
-namespace MangaTracker.Test.Application.Query.UserCollections.GetUserCollectionList
+namespace MangaTracker.Test.Application.UserCollections.Query.GetUserCollectionList
 {
     public class UserCollectionListQueryHandlerTest
     {
@@ -25,7 +25,6 @@ namespace MangaTracker.Test.Application.Query.UserCollections.GetUserCollectionL
         [Fact]
         public async Task Should_Return_Empty_List_When_User_Has_No_Collection() 
         {
-            // Arrange
             var userId = Guid.NewGuid();
 
             _userCollectionRepository.Setup(x => x.GetAllCollectionByUserIdAsync(userId))
@@ -36,10 +35,8 @@ namespace MangaTracker.Test.Application.Query.UserCollections.GetUserCollectionL
                 UserId = userId
             };
 
-            // Act
             var result = await _userCollectionListHandler.HandleAsync(query, CancellationToken.None);
 
-            // Assert
             result.listUserCollections.Should().NotBeNull();
             result.listUserCollections.Should().BeEmpty();
             result.Success.Should().BeTrue();
@@ -49,7 +46,6 @@ namespace MangaTracker.Test.Application.Query.UserCollections.GetUserCollectionL
         [Fact]
         public async Task Should_Return_UserCollections_When_Collections_Exist() 
         {
-            // Arrange
             var userId = Guid.NewGuid();
             var mangaId = Guid.NewGuid();
 
@@ -70,7 +66,6 @@ namespace MangaTracker.Test.Application.Query.UserCollections.GetUserCollectionL
                 UserId = userId
             };
 
-            // Act
             var result = await _userCollectionListHandler.HandleAsync(query, CancellationToken.None);
 
             result.listUserCollections.Should().NotBeNull();
@@ -81,7 +76,6 @@ namespace MangaTracker.Test.Application.Query.UserCollections.GetUserCollectionL
         [Fact]
         public async Task Should_Map_Manga_Information_Correctly()
         {
-            // Arrange
             var userId = Guid.NewGuid();
             var mangaId = Guid.NewGuid();
 
@@ -102,7 +96,6 @@ namespace MangaTracker.Test.Application.Query.UserCollections.GetUserCollectionL
                 UserId = userId
             };
 
-            // Act
             var result = await _userCollectionListHandler.HandleAsync(query, CancellationToken.None);
 
             result.listUserCollections.Should().NotBeNull();
@@ -116,7 +109,6 @@ namespace MangaTracker.Test.Application.Query.UserCollections.GetUserCollectionL
         [Fact]
         public async Task Should_Return_Correct_OwnedVolumes() 
         {
-            // Arrange
             var userId = Guid.NewGuid();
             var mangaId = Guid.NewGuid();
             var manga = new Manga(mangaId, "One Piece", "Planeta", 111, "cover.jpg");
@@ -148,7 +140,6 @@ namespace MangaTracker.Test.Application.Query.UserCollections.GetUserCollectionL
                 UserId = userId
             };
 
-            // Act
             var result = await _userCollectionListHandler.HandleAsync(query, CancellationToken.None);
 
             result.listUserCollections.Should().NotBeNull();
@@ -161,7 +152,6 @@ namespace MangaTracker.Test.Application.Query.UserCollections.GetUserCollectionL
         [Fact]
         public async Task Should_Return_Correct_CompletionPercentage()
         {
-            // Arrange
             var userId = Guid.NewGuid();
             var mangaId = Guid.NewGuid();
             var manga = new Manga(mangaId, "One Piece", "Planeta", 100, "cover.jpg");
@@ -193,7 +183,6 @@ namespace MangaTracker.Test.Application.Query.UserCollections.GetUserCollectionL
                 UserId = userId
             };
 
-            // Act
             var result = await _userCollectionListHandler.HandleAsync(query, CancellationToken.None);
 
             result.listUserCollections.Should().NotBeNull();
@@ -205,7 +194,6 @@ namespace MangaTracker.Test.Application.Query.UserCollections.GetUserCollectionL
         [Fact]
         public async Task Should_Return_Volumes_Ordered()
         {
-            // Arrange
             var userId = Guid.NewGuid();
             var mangaId = Guid.NewGuid();
             var manga = new Manga(mangaId, "One Piece", "Planeta", 100, "cover.jpg");
@@ -237,7 +225,6 @@ namespace MangaTracker.Test.Application.Query.UserCollections.GetUserCollectionL
                 UserId = userId
             };
 
-            // Act
             var result = await _userCollectionListHandler.HandleAsync(query, CancellationToken.None);
 
             result.listUserCollections.Should().NotBeNull();

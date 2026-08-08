@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace MangaTracker.Test.Application.Commands.Users.LoginUser
+namespace MangaTracker.Test.Application.Users.Commands.LoginUser
 {
     public class LoginUserCommandHandlerTest
     {
@@ -29,7 +29,7 @@ namespace MangaTracker.Test.Application.Commands.Users.LoginUser
         [Fact]
         public async Task Should_Return_Token_When_Credentials_Are_Valid()
         {
-            // Arrange
+
             var logginUserCommand = new LoginUserCommand
             {
                 Email = "test@test.com",
@@ -47,7 +47,7 @@ namespace MangaTracker.Test.Application.Commands.Users.LoginUser
             _jwtProviderMock
                 .Setup(jwt => jwt.GenerateToken(It.IsAny<User>()))
                 .Returns("generated_token");
-            
+
             var userResponse = await _loginUserCommandHandler.HandleAsync(logginUserCommand, CancellationToken.None);
 
             _jwtProviderMock.Verify(
@@ -62,7 +62,6 @@ namespace MangaTracker.Test.Application.Commands.Users.LoginUser
         [Fact]
         public async Task Should_Return_Error_When_Credentials_Are_Invalid()
         {
-            // Arrange
             var logginUserCommand = new LoginUserCommand
             {
                 Email = "test@test.com",
@@ -92,7 +91,6 @@ namespace MangaTracker.Test.Application.Commands.Users.LoginUser
         [Fact]
         public async Task Should_Return_Error_When_User_Does_Not_Exist()
         {
-            // Arrange
             var logginUserCommand = new LoginUserCommand
             {
                 Email = "test@test.com",

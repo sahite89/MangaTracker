@@ -6,7 +6,7 @@ using MangaTracker.Domain.Entities;
 using Moq;
 using Xunit;
 
-namespace MangaTracker.Test.Application.Commands.Users.RegisterUser
+namespace MangaTracker.Test.Application.Users.Commands.RegisterUser
 {
     public class RegisterUserCommandHandlerTests
     {
@@ -45,10 +45,8 @@ namespace MangaTracker.Test.Application.Commands.Users.RegisterUser
                 .Setup(x => x.Hash(command.Password))
                 .Returns("HashedPassword123.");
 
-            // Act
             await _registerUserHandler.HandleAsync(command, CancellationToken.None);
 
-            // Assert
             _userRepositoryMock.Verify(
                 x => x.AddAsync(It.IsAny<User>()),
                 Times.Once());
@@ -58,7 +56,7 @@ namespace MangaTracker.Test.Application.Commands.Users.RegisterUser
         [Fact]
         public async Task Should_Return_Error_When_User_Already_Exists()
         {
-            // Arrange
+
             var command = new RegisterUserCommand
             {
                 UserName = "test",
@@ -78,10 +76,8 @@ namespace MangaTracker.Test.Application.Commands.Users.RegisterUser
                 .Setup(x => x.GetUserByEmailAsync(command.Email))
                 .ReturnsAsync(existingUser);
 
-            // Act
             var result = await _registerUserHandler.HandleAsync(command, CancellationToken.None);
 
-            // Assert
             result.Success.Should().BeFalse();
             result.Message.Should().Be("User already exists");
 
@@ -93,7 +89,6 @@ namespace MangaTracker.Test.Application.Commands.Users.RegisterUser
         [Fact]
         public async Task Should_Hash_Password_When_Creating_User()
         {
-            // Arrange
             var command = new RegisterUserCommand
             {
                 UserName = "test",
@@ -113,10 +108,8 @@ namespace MangaTracker.Test.Application.Commands.Users.RegisterUser
                 .Setup(x => x.Hash(command.Password))
                 .Returns("HashedPassword123.");
 
-            // Act
             await _registerUserHandler.HandleAsync(command, CancellationToken.None);
 
-            // Assert
             _passwordHasherMock.Verify(
                 x => x.Hash(command.Password),
                 Times.Once());

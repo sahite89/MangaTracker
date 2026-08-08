@@ -1,4 +1,5 @@
 ﻿using MangaTracker.Application.Features.UserCollections.CreateUserCollection;
+using MangaTracker.Application.Features.UserCollections.DeleteUserCollection;
 using MangaTracker.Application.Features.UserCollections.GetUserCollectionList;
 using MangaTracker.Application.Features.Users.LoginUser;
 using MangaTracker.Application.Features.Users.RegisterUser;
@@ -17,6 +18,7 @@ namespace MangaTracker.Application
             services.AddScoped<LoginUserCommandHandler>();
             services.AddScoped<CreateUserCollectionCommandHandler>();
             services.AddScoped<GetUserCollectionListQueryHandler>();
+            services.AddScoped<DeleteUserCollectionCommandHandler>();
 
             return services;
         }
