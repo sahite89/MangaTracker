@@ -2,6 +2,7 @@
 using MangaTracker.Application.Features.UserCollections.DeleteUserCollection;
 using MangaTracker.Application.Features.UserCollections.GetUserCollectionList;
 using MangaTracker.Application.Features.UserCollectionVolumenes.CreateUserCollectionVolume;
+using MangaTracker.Application.Features.UserCollectionVolumenes.DeleteUserCollectionVolume;
 using MangaTracker.Application.Features.UserCollectionVolumenes.GetUserCollectionVolume;
 using MangaTracker.Application.Features.Users.LoginUser;
 using MangaTracker.Application.Features.Users.RegisterUser;
@@ -23,6 +24,7 @@ namespace MangaTracker.Application
             services.AddScoped<DeleteUserCollectionCommandHandler>();
             services.AddScoped<CreateUserCollectionVolumeCommandHandler>();
             services.AddScoped<GetUserCollectionVolumeQueryHandler>();
+            services.AddScoped<DeleteUserCollectionVolumeCommandHandler>();
 
             return services;
         }

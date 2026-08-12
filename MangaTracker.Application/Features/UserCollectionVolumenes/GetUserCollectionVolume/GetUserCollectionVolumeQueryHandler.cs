@@ -38,7 +38,6 @@ namespace MangaTracker.Application.Features.UserCollectionVolumenes.GetUserColle
             }
 
             response.Success = true;
-
             response.getUserCollectionVolumeDto = new GetUserCollectionVolumeDto
             {
                 VolumeNumbers = userCollectionVolume

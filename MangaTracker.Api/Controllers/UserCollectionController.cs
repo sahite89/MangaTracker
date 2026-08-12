@@ -4,7 +4,9 @@ using MangaTracker.Application.Features.UserCollections.CreateUserCollection;
 using MangaTracker.Application.Features.UserCollections.DeleteUserCollection;
 using MangaTracker.Application.Features.UserCollections.GetUserCollectionList;
 using MangaTracker.Application.Features.UserCollectionVolumenes.CreateUserCollectionVolume;
+using MangaTracker.Application.Features.UserCollectionVolumenes.DeleteUserCollectionVolume;
 using MangaTracker.Application.Features.UserCollectionVolumenes.GetUserCollectionVolume;
+using MangaTracker.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -21,18 +23,21 @@ namespace MangaTracker.Api.Controllers
         private readonly DeleteUserCollectionCommandHandler _deleteUserCollectionCommandHandler;
         private readonly CreateUserCollectionVolumeCommandHandler _createUserCollectionVolumeHandler;
         private readonly GetUserCollectionVolumeQueryHandler _getUserCollectionVolumeQueryHandler;
+        private readonly DeleteUserCollectionVolumeCommandHandler _deleteUserCollectionVolumeCommandHandler;
 
         public UserCollectionController(CreateUserCollectionCommandHandler createUserCollectionHandler,
                                         GetUserCollectionListQueryHandler getUserCollectionListHandler,
                                         DeleteUserCollectionCommandHandler deleteUserCollectionCommandHandler,
                                         CreateUserCollectionVolumeCommandHandler createUserCollectionVolumeHandler,
-                                        GetUserCollectionVolumeQueryHandler getUserCollectionVolumeHandler)
+                                        GetUserCollectionVolumeQueryHandler getUserCollectionVolumeHandler,
+                                        DeleteUserCollectionVolumeCommandHandler deleteUserCollectionVolumeCommandHandler)
         {
             _createUserCollectionHandler = createUserCollectionHandler;
             _getUserCollectionListHandler = getUserCollectionListHandler;
             _deleteUserCollectionCommandHandler = deleteUserCollectionCommandHandler;
             _createUserCollectionVolumeHandler = createUserCollectionVolumeHandler;
             _getUserCollectionVolumeQueryHandler = getUserCollectionVolumeHandler;
+            _deleteUserCollectionVolumeCommandHandler = deleteUserCollectionVolumeCommandHandler;
         }
 
         [Authorize]
@@ -149,6 +154,27 @@ namespace MangaTracker.Api.Controllers
             }
 
             return Created($"/api/userCollectionVolumes/{response.createUserCollectionVolumeDto.VolumeNumber}", response);
+        }
+
+        [Authorize]
+        [HttpDelete("{mangaId}/volumes/{volumeNumber}")]
+        public async Task<IActionResult> DeleteCollectionVolume(Guid mangaId, int volumeNumber, CancellationToken cancellationToken) {
+
+            var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var deleteUserCollectionVolume = new DeleteUserCollectionVolumeCommand(userId, mangaId, volumeNumber);
+
+            var deletedVolume = await _deleteUserCollectionVolumeCommandHandler.HandleAsync(deleteUserCollectionVolume, cancellationToken);
+
+            if (!deletedVolume.Success)
+            {
+                return BadRequest(new
+                {
+                    deletedVolume.Success,
+                    deletedVolume.Message,
+                });
+            }
+
+            return Ok(deletedVolume);
         }
 
     }
