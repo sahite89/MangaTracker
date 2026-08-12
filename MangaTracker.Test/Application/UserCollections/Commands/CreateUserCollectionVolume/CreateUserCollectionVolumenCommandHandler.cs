@@ -23,10 +23,19 @@ namespace MangaTracker.Test.Application.UserCollections.Commands.CreateUserColle
         [Fact]
         public async Task Should_Create_Volume_When_Request_Is_Valid() 
         {
+            var userId = Guid.NewGuid();
+            var mangaId = Guid.NewGuid();
+
+            var existingCollection = new UserCollection(userId, mangaId);
+
+            _userCollectionRepositoryMock
+                .Setup(repo => repo.GetAsync(userId,mangaId))
+                .ReturnsAsync(existingCollection);
+
             var command = new CreateUserCollectionVolumeCommand
             {
-                UserId = Guid.NewGuid(),
-                MangaId = Guid.NewGuid(),
+                UserId = userId,
+                MangaId = mangaId,
                 VolumeNumber = 1
             };
 
@@ -40,8 +49,8 @@ namespace MangaTracker.Test.Application.UserCollections.Commands.CreateUserColle
 
             _userCollectionVolumeRepositoryMock
                 .Verify(repo => repo.AddAsync(It.IsAny<UserCollectionVolume>()), Times.Once);
+            
             result.Should().NotBeNull();
-
             result.Success.Should().BeTrue();
             result.createUserCollectionVolumeDto.UserId.Should().Be(command.UserId);
             result.createUserCollectionVolumeDto.MangaId.Should().Be(command.MangaId);

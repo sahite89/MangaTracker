@@ -13,7 +13,7 @@ namespace MangaTracker.Infrastructure.Persistence.Repositories
         {
         }
 
-        public async Task<UserCollectionVolume?> GetUserCollectionVolume(Guid userId,Guid mangaId,int volumeNumber)
+        public async Task<UserCollectionVolume?> GetUserCollectionVolume(Guid userId,Guid mangaId, int volumeNumber)
         {
             return await _dbContext.UserCollectionVolumes
                 .FirstOrDefaultAsync(v =>
@@ -21,10 +21,11 @@ namespace MangaTracker.Infrastructure.Persistence.Repositories
                     v.MangaId == mangaId &&
                     v.VolumeNumber == volumeNumber);
         }
-        public async Task<List<UserCollectionVolume>?> GetUserCollectionVolumes(Guid userId, Guid mangaId, int volumeNumber)
+        public async Task<List<UserCollectionVolume>> GetUserCollectionVolumes(Guid userId, Guid mangaId)
         {
             return await _dbContext.UserCollectionVolumes
-                .Where(v => v.UserId == userId && v.MangaId == mangaId && v.VolumeNumber == volumeNumber)
+                .Where(v => v.UserId == userId && v.MangaId == mangaId)
+                .OrderBy(v => v.VolumeNumber)
                 .ToListAsync();
 
         }

@@ -4,6 +4,7 @@ using MangaTracker.Application.Features.UserCollections.CreateUserCollection;
 using MangaTracker.Application.Features.UserCollections.DeleteUserCollection;
 using MangaTracker.Application.Features.UserCollections.GetUserCollectionList;
 using MangaTracker.Application.Features.UserCollectionVolumenes.CreateUserCollectionVolume;
+using MangaTracker.Application.Features.UserCollectionVolumenes.GetUserCollectionVolume;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -19,16 +20,19 @@ namespace MangaTracker.Api.Controllers
         private readonly GetUserCollectionListQueryHandler _getUserCollectionListHandler;
         private readonly DeleteUserCollectionCommandHandler _deleteUserCollectionCommandHandler;
         private readonly CreateUserCollectionVolumeCommandHandler _createUserCollectionVolumeHandler;
+        private readonly GetUserCollectionVolumeQueryHandler _getUserCollectionVolumeQueryHandler;
 
         public UserCollectionController(CreateUserCollectionCommandHandler createUserCollectionHandler,
                                         GetUserCollectionListQueryHandler getUserCollectionListHandler,
                                         DeleteUserCollectionCommandHandler deleteUserCollectionCommandHandler,
-                                        CreateUserCollectionVolumeCommandHandler createUserCollectionVolumeHandler)
+                                        CreateUserCollectionVolumeCommandHandler createUserCollectionVolumeHandler,
+                                        GetUserCollectionVolumeQueryHandler getUserCollectionVolumeHandler)
         {
             _createUserCollectionHandler = createUserCollectionHandler;
             _getUserCollectionListHandler = getUserCollectionListHandler;
             _deleteUserCollectionCommandHandler = deleteUserCollectionCommandHandler;
             _createUserCollectionVolumeHandler = createUserCollectionVolumeHandler;
+            _getUserCollectionVolumeQueryHandler = getUserCollectionVolumeHandler;
         }
 
         [Authorize]
@@ -104,23 +108,23 @@ namespace MangaTracker.Api.Controllers
         [HttpGet("{mangaId}/volumes")]
         public async Task<IActionResult> GetCollectionVolumes(Guid mangaId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
-            //var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-            //var getUserCollectionVolumesQuery = new GetUserCollectionVolumesQuery
-            //{
-            //    UserId = userId,
-            //    MangaId = mangaId
-            //};
-            //var userCollectionVolumes = await _getUserCollectionListHandler.HandleAsync(getUserCollectionVolumesQuery, cancellationToken);
-            //if (!userCollectionVolumes.Success)
-            //{
-            //    return BadRequest(new
-            //    {
-            //        userCollectionVolumes.Success,
-            //        userCollectionVolumes.Message,
-            //    });
-            //}
-            //return Ok(userCollectionVolumes);
+            var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var getUserCollectionVolumesQuery = new GetUserCollectionVolumeQuery
+            {
+                UserId = userId,
+                MangaId = mangaId
+            };
+
+            var userCollectionVolumes = await _getUserCollectionVolumeQueryHandler.HandleAsync(getUserCollectionVolumesQuery,cancellationToken);
+            if (!userCollectionVolumes.Success)
+            {
+                return BadRequest(new
+                {
+                    userCollectionVolumes.Success,
+                    userCollectionVolumes.Message
+                });
+            }
+            return Ok(userCollectionVolumes);
         }
 
         [Authorize]
@@ -146,5 +150,6 @@ namespace MangaTracker.Api.Controllers
 
             return Created($"/api/userCollectionVolumes/{response.createUserCollectionVolumeDto.VolumeNumber}", response);
         }
+
     }
 }
