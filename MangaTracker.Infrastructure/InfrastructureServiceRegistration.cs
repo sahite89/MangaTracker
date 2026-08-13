@@ -32,6 +32,7 @@ namespace MangaTracker.Infrastructure
 
             services.AddScoped<IUserCollectionRepository, UserCollectionRepository> ();
             services.AddScoped<IUserCollectionVolumeRepository, UserCollectionVolumeRepository>();
+            services.AddScoped<IMangaRepository, MangaRepository>();
 
             services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
             services.AddScoped<IJwtProvider, JwtProvider>();

@@ -49,7 +49,7 @@ namespace MangaTracker.Test.Application.UserCollections.Query.GetUserCollectionL
             var userId = Guid.NewGuid();
             var mangaId = Guid.NewGuid();
 
-            var manga = new Manga(mangaId,"One Piece","Planeta",111,"cover.jpg");
+            var manga = new Manga(mangaId,"One Piece","Planeta",111,"cover.jpg","");
             var collection = new UserCollection(userId, mangaId);
 
             typeof(UserCollection)
@@ -79,7 +79,7 @@ namespace MangaTracker.Test.Application.UserCollections.Query.GetUserCollectionL
             var userId = Guid.NewGuid();
             var mangaId = Guid.NewGuid();
 
-            var manga = new Manga(mangaId, "One Piece", "Planeta", 111, "cover.jpg");
+            var manga = new Manga(mangaId, "One Piece", "Planeta", 111, "cover.jpg", "");
             var collection = new UserCollection(userId, mangaId);
 
             typeof(UserCollection)
@@ -111,7 +111,7 @@ namespace MangaTracker.Test.Application.UserCollections.Query.GetUserCollectionL
         {
             var userId = Guid.NewGuid();
             var mangaId = Guid.NewGuid();
-            var manga = new Manga(mangaId, "One Piece", "Planeta", 111, "cover.jpg");
+            var manga = new Manga(mangaId, "One Piece", "Planeta", 111, "cover.jpg","");
             var collection = new UserCollection(userId, mangaId);
 
             var userCollectionVolume = new List<UserCollectionVolume>
@@ -154,7 +154,7 @@ namespace MangaTracker.Test.Application.UserCollections.Query.GetUserCollectionL
         {
             var userId = Guid.NewGuid();
             var mangaId = Guid.NewGuid();
-            var manga = new Manga(mangaId, "One Piece", "Planeta", 100, "cover.jpg");
+            var manga = new Manga(mangaId, "One Piece", "Planeta", 100, "cover.jpg","");
             var collection = new UserCollection(userId, mangaId);
 
             var userCollectionVolume = new List<UserCollectionVolume>
@@ -196,7 +196,7 @@ namespace MangaTracker.Test.Application.UserCollections.Query.GetUserCollectionL
         {
             var userId = Guid.NewGuid();
             var mangaId = Guid.NewGuid();
-            var manga = new Manga(mangaId, "One Piece", "Planeta", 100, "cover.jpg");
+            var manga = new Manga(mangaId, "One Piece", "Planeta", 100, "cover.jpg", "");
             var collection = new UserCollection(userId, mangaId);
 
             var userCollectionVolume = new List<UserCollectionVolume>
