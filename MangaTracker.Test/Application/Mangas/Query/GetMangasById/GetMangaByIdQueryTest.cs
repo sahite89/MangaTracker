@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using MangaTracker.Application.Contracts.Persistence;
+using MangaTracker.Application.Errors;
 using MangaTracker.Application.Features.Manga.GetMangasById;
 using MangaTracker.Domain.Entities;
 using Moq;
@@ -62,6 +63,7 @@ namespace MangaTracker.Test.Application.Mangas.Query.GetMangasById
             result.Success.Should().BeFalse();
             result.Message.Contains("Manga not found");
             result.MangaByIdDto.Should().BeNull();
+            Assert.Equal(ErrorCode.MangaNotFound, result.ErrorCode);
 
         }
     }

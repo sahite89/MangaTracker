@@ -1,5 +1,7 @@
-﻿using MangaTracker.Api.Models.UserCollection;
+﻿using Azure;
+using MangaTracker.Api.Models.UserCollection;
 using MangaTracker.Api.Models.UserCollectionVolume;
+using MangaTracker.Application.Errors;
 using MangaTracker.Application.Features.UserCollections.CreateUserCollection;
 using MangaTracker.Application.Features.UserCollections.DeleteUserCollection;
 using MangaTracker.Application.Features.UserCollections.GetUserCollectionList;
@@ -51,16 +53,6 @@ namespace MangaTracker.Api.Controllers
 
             var userCollectionList = await _getUserCollectionListHandler.HandleAsync(userCollectionListQuery, cancellationToken);
 
-            if (!userCollectionList.Success)
-            {
-                return BadRequest(new
-                {
-                    userCollectionList.Success,
-                    userCollectionList.Message,
-                });
-            }
-            ;
-
             return Ok(userCollectionList);
 
         }
@@ -76,17 +68,18 @@ namespace MangaTracker.Api.Controllers
                 CreatedAt = DateTime.UtcNow,
             };
 
-            var userCollection = await _createUserCollectionHandler.HandleAsync(createUserCollectionCommand, cancellationToken);
-            if (!userCollection.Success)
+            var response = await _createUserCollectionHandler.HandleAsync(createUserCollectionCommand, cancellationToken);
+            if (!response.Success)
             {
-                return BadRequest(new
+                return response.ErrorCode switch
                 {
-                    userCollection.Success,
-                    userCollection.Message,
-                });
+                    ErrorCode.CollectionAlreadyExists => Conflict(response),
+                    ErrorCode.MangaNotFound => NotFound(response),
+                    _ => BadRequest(response)
+                };
             }
 
-            return Created($"/api/userCollections/{userCollection.createUserCollectionDto}", userCollection);
+            return Created($"/api/userCollections/{request.mangaId}", response);
         }
 
         [Authorize]

@@ -19,14 +19,6 @@ namespace MangaTracker.Application.Features.UserCollections.GetUserCollectionLis
             var response = new GetUserCollectionListQueryResponse();
             var userCollections = await userCollectionRepository.GetAllCollectionByUserIdAsync(query.UserId);
 
-            if (!userCollections.Any()) { 
-                response.Success = true;
-                response.Message = "No collections found for the user.";
-                response.listUserCollections = new List<GetUserCollectionListDto>();
-                return response;
-            }
-
-            response.Success = true;
             var listUserCollectionsDto = userCollections.Select(x => new GetUserCollectionListDto
             {
                 MangaId = x.MangaId,

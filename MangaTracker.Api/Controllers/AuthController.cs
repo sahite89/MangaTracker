@@ -1,4 +1,6 @@
-﻿using MangaTracker.Api.Models.User;
+﻿using Azure;
+using MangaTracker.Api.Models.User;
+using MangaTracker.Application.Errors;
 using MangaTracker.Application.Features.Users.LoginUser;
 using MangaTracker.Application.Features.Users.RegisterUser;
 using Microsoft.AspNetCore.Mvc;
@@ -29,17 +31,18 @@ namespace MangaTracker.Api.Controllers
                 Password = user.Password
             };
 
-            var userId = await _registerUserCommandHandler.HandleAsync(registerUserCommand, cancellationToken);
-            if (!userId.Success)
+            var response = await _registerUserCommandHandler.HandleAsync(registerUserCommand, cancellationToken);
+            if (!response.Success)
             {
-                return BadRequest(new
+                return response.ErrorCode switch
                 {
-                    userId.Message,
-                    userId.ValidationErrors
-                });
+                    ErrorCode.ValidationError => BadRequest(response),
+                    ErrorCode.UserAlreadyExists => Conflict(response),
+                    _ => BadRequest(response)
+                };
             }
 
-            return Created($"/api/users/{userId.RegisterUserDto!.UserId}", userId);
+            return Created($"/api/users/{response.RegisterUserDto!.UserId}", response);
         }
 
         [HttpPost("login")]
@@ -51,17 +54,19 @@ namespace MangaTracker.Api.Controllers
                 Password = loginUser.Password
             };
 
-            var userLoged = await _loginUserCommandHandler.HandleAsync(loginUserCommand, cancellationToken);
+            var response = await _loginUserCommandHandler.HandleAsync(loginUserCommand, cancellationToken);
             
-            if(!userLoged.Success)
+            if(!response.Success)
             {
-                return BadRequest(new
+                return response.ErrorCode switch
                 {
-                    userLoged.Message,
-                });
+                    ErrorCode.InvalidCredentials => Unauthorized(response),
+                    ErrorCode.ValidationError => BadRequest(response),
+                    _ => BadRequest(response)
+                };
             }
 
-            return Ok(userLoged);
+            return Ok(response);
         }
     }
 }

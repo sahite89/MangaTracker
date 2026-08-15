@@ -30,15 +30,6 @@ namespace MangaTracker.Api.Controllers
 
             var listAllManga = await _getMangaQueryHandler.HandleAsync(query, cancellationToken);
 
-            if (!listAllManga.Success)
-            {
-                BadRequest(new
-                {
-                    listAllManga.Success,
-                    listAllManga.Message
-                });
-            }
-
             return Ok(listAllManga);
         }
 
@@ -50,18 +41,14 @@ namespace MangaTracker.Api.Controllers
                 MangaId = mangaId
             };
 
-            var manga = await _getMangaByIdQueryHandler.HandleAsync(query, cancelationToken);
+            var response = await _getMangaByIdQueryHandler.HandleAsync(query, cancelationToken);
 
-            if (!manga.Success)
+            if (!response.Success)
             {
-                BadRequest(new
-                {
-                    manga.Success,
-                    manga.Message
-                });
+                return NotFound(response);
             }
 
-            return Ok(manga);
+            return Ok(response);
         }
 
     }

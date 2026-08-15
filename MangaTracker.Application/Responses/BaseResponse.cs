@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MangaTracker.Application.Errors;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -25,6 +26,7 @@ namespace MangaTracker.Application.Responses
 
         public bool Success { get; set; }
         public string Message { get; set; } = string.Empty;
-        public List<string>? ValidationErrors { get; set; }
+        public List<string>? ValidationErrors { get; set; } = new List<string>();
+        public ErrorCode ErrorCode { get; set; } = ErrorCode.None;
     }
 }

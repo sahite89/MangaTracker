@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using MangaTracker.Application.Contracts.Infrastructure;
 using MangaTracker.Application.Contracts.Persistence;
+using MangaTracker.Application.Errors;
 using MangaTracker.Application.Features.Users.RegisterUser;
 using MangaTracker.Domain.Entities;
 using Moq;
@@ -80,6 +81,7 @@ namespace MangaTracker.Test.Application.Users.Commands.RegisterUser
 
             result.Success.Should().BeFalse();
             result.Message.Should().Be("User already exists");
+            Assert.Equal(ErrorCode.UserAlreadyExists, result.ErrorCode);
 
             _userRepositoryMock.Verify(
                 x => x.AddAsync(It.IsAny<User>()),

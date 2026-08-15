@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using MangaTracker.Application.Contracts.Infrastructure;
 using MangaTracker.Application.Contracts.Persistence;
+using MangaTracker.Application.Errors;
 using MangaTracker.Application.Features.Users.LoginUser;
 using MangaTracker.Domain.Entities;
 using Moq;
@@ -83,8 +84,9 @@ namespace MangaTracker.Test.Application.Users.Commands.LoginUser
                     Times.Never);
 
             userResponse.Success.Should().BeFalse();
-            userResponse.Message.Should().Be("Incorrect Password");
+            userResponse.Message.Should().Be("Invalid email or password");
             userResponse.loginUserDto.Should().BeNull();
+            Assert.Equal(ErrorCode.InvalidCredentials, userResponse.ErrorCode);
 
         }
 
@@ -108,8 +110,32 @@ namespace MangaTracker.Test.Application.Users.Commands.LoginUser
                     Times.Never);
 
             userResponse.Success.Should().BeFalse();
-            userResponse.Message.Should().Be("Invalid credentials");
+            userResponse.Message.Should().Be("Invalid email or password");
             userResponse.loginUserDto.Should().BeNull();
+            Assert.Equal(ErrorCode.InvalidCredentials, userResponse.ErrorCode);
+
+
+        }
+
+        [Fact]
+        public async Task Should_Return_Error_When_User_Put_Empty_Email_And_Password()
+        {
+            var logginUserCommand = new LoginUserCommand
+            {
+                Email = "",
+                Password = ""
+            };
+
+            var userResponse = await _loginUserCommandHandler.HandleAsync(logginUserCommand, CancellationToken.None);
+
+            _jwtProviderMock.Verify(
+                    x => x.GenerateToken(It.IsAny<User>()),
+                    Times.Never);
+
+            userResponse.Success.Should().BeFalse();
+            userResponse.Message.Should().Be("Validation errors occurred");
+            userResponse.loginUserDto.Should().BeNull();
+            Assert.Equal(ErrorCode.ValidationError, userResponse.ErrorCode);
 
         }
     }

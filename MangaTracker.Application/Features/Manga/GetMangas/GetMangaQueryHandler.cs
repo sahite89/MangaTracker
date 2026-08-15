@@ -1,4 +1,5 @@
 ﻿using MangaTracker.Application.Contracts.Persistence;
+using MangaTracker.Application.Errors;
 using MangaTracker.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -19,13 +20,6 @@ namespace MangaTracker.Application.Features.Manga.GetMangas
         {
             var response = new GetMangaQueryResponse();
             var result = await _mangaRepository.GetAllAsync(query.Title, query.Publisher);
-
-            if(result == null)
-            {
-                response.Success = false;
-                response.Message = "Error Obtain List Manga";
-                return response;
-            }
 
             var listMangaDto = result.Select(x => new GetMangaQueryDto
             {

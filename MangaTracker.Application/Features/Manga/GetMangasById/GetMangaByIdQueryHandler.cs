@@ -1,4 +1,5 @@
 ﻿using MangaTracker.Application.Contracts.Persistence;
+using MangaTracker.Application.Errors;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -24,10 +25,10 @@ namespace MangaTracker.Application.Features.Manga.GetMangasById
             {
                 response.Success = false;
                 response.Message = "Manga not found";
+                response.ErrorCode = ErrorCode.MangaNotFound;
                 return response;
             }
 
-            response.Success = true;
             response.MangaByIdDto = new GetMangaByIdDto
             {
                 MangaId = result.Id,
