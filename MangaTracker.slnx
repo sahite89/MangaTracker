@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Elementos de la solución/">
+    <File Path="README.md" />
+  </Folder>
   <Project Path="MangaTracker.Api/MangaTracker.Api.csproj" />
   <Project Path="MangaTracker.Application/MangaTracker.Application.csproj" />
   <Project Path="MangaTracker.Domain/MangaTracker.Domain.csproj" />
