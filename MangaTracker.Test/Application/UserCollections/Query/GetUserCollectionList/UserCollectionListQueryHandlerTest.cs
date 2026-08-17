@@ -40,7 +40,6 @@ namespace MangaTracker.Test.Application.UserCollections.Query.GetUserCollectionL
             result.listUserCollections.Should().NotBeNull();
             result.listUserCollections.Should().BeEmpty();
             result.Success.Should().BeTrue();
-            result.Message.Should().Be("No collections found for the user.");
         }
 
         [Fact]

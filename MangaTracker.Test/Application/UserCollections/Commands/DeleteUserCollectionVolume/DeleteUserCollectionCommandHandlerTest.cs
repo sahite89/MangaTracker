@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using MangaTracker.Application.Contracts.Persistence;
+using MangaTracker.Application.Errors;
 using MangaTracker.Application.Features.UserCollectionVolumenes.DeleteUserCollectionVolume;
 using MangaTracker.Domain.Entities;
 using Moq;
@@ -58,7 +59,6 @@ namespace MangaTracker.Test.Application.UserCollections.Commands.DeleteUserColle
 
             response.Should().NotBeNull();
             response.Success.Should().BeTrue();
-            Assert.Equal($"Deleted volume succeeded: {volume.VolumeNumber}", response.Message);
 
         }
 
@@ -89,7 +89,8 @@ namespace MangaTracker.Test.Application.UserCollections.Commands.DeleteUserColle
 
             response.Should().NotBeNull();
             response.Success.Should().BeFalse();
-            Assert.Equal($"Collection not found.", response.Message);
+            Assert.Equal($"Collection not found", response.Message);
+            Assert.Equal(ErrorCode.CollectionNotFound, response.ErrorCode);
         }
 
         [Fact]
@@ -125,7 +126,8 @@ namespace MangaTracker.Test.Application.UserCollections.Commands.DeleteUserColle
 
             response.Should().NotBeNull();
             response.Success.Should().BeFalse();
-            Assert.Equal($"Volume not found in collection.", response.Message);
+            Assert.Equal($"Volume not found", response.Message);
+            Assert.Equal(ErrorCode.VolumeNotFound, response.ErrorCode);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MangaTracker.Application.Contracts.Persistence;
+using MangaTracker.Application.Errors;
 using MangaTracker.Application.Features.UserCollections.DeleteUserCollection;
 using MangaTracker.Domain.Entities;
 using Moq;
@@ -35,7 +36,6 @@ namespace MangaTracker.Test.Application.UserCollections.Commands.DeleteUserColle
             var response = await _deleteUserCollectionCommandHandler.HandleAsync(userCollectionToDelete, CancellationToken.None);
 
             Assert.True(response.Success);
-            Assert.Equal($"Deleted Collection: {mangaId}", response.Message);
             _userCollectionRepositoryMock.Verify(repo => repo.DeleteAsync(existingCollection), Times.Once);
         }
 
@@ -54,7 +54,8 @@ namespace MangaTracker.Test.Application.UserCollections.Commands.DeleteUserColle
             var response = await _deleteUserCollectionCommandHandler.HandleAsync(userCollectionToDelete, CancellationToken.None);
 
             Assert.False(response.Success);
-            Assert.Equal("Collection not found in user", response.Message);
+            Assert.Equal("Collection not found", response.Message);
+            Assert.Equal(ErrorCode.CollectionNotFound, response.ErrorCode);
             _userCollectionRepositoryMock.Verify(repo => repo.DeleteAsync(It.IsAny<UserCollection>()), Times.Never);
         }
     }

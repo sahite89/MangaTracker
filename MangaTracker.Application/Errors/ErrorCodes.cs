@@ -14,6 +14,7 @@ namespace MangaTracker.Application.Errors
         CollectionNotFound,
         CollectionAlreadyExists,
         VolumeAlreadyExists,
-        InvalidVolumeNumber
+        InvalidVolumeNumber,
+        VolumeNotFound
     }
 }

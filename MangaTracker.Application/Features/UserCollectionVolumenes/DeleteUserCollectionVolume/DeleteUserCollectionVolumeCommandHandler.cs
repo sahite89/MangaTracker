@@ -1,4 +1,5 @@
 ﻿using MangaTracker.Application.Contracts.Persistence;
+using MangaTracker.Application.Errors;
 using MangaTracker.Application.Features.UserCollections.DeleteUserCollection;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,8 @@ namespace MangaTracker.Application.Features.UserCollectionVolumenes.DeleteUserCo
             if(existCollection.Count == 0)
             {
                 response.Success = false;
-                response.Message = "Collection not found.";
+                response.Message = "Collection not found";
+                response.ErrorCode = ErrorCode.CollectionNotFound;
                 return response;
             }
 
@@ -31,14 +33,12 @@ namespace MangaTracker.Application.Features.UserCollectionVolumenes.DeleteUserCo
             if (existVolumenInCollection == null)
             {
                 response.Success = false;
-                response.Message = "Volume not found in collection.";
+                response.Message = "Volume not found";
+                response.ErrorCode = ErrorCode.VolumeNotFound;
                 return response;
             }
 
             await _userCollectionVolumeRepository.DeleteAsync(existVolumenInCollection!);
-
-            response.Success = true;
-            response.Message = "Deleted volume succeeded: " + existVolumenInCollection!.VolumeNumber ;
 
             return response;
         }

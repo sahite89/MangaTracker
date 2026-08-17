@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using MangaTracker.Application.Contracts.Persistence;
+using MangaTracker.Application.Errors;
 using MangaTracker.Application.Features.UserCollectionVolumenes.CreateUserCollectionVolume;
 using MangaTracker.Domain.Entities;
 using Moq;
@@ -10,14 +11,18 @@ namespace MangaTracker.Test.Application.UserCollections.Commands.CreateUserColle
     public class CreateUserCollectionVolumenCommandHandler
     {
         private readonly Mock<IUserCollectionVolumeRepository> _userCollectionVolumeRepositoryMock;
-        private readonly CreateUserCollectionVolumeCommandHandler _createUserCollectionVolumeHandler;
         private readonly Mock<IUserCollectionRepository> _userCollectionRepositoryMock;
+        private readonly Mock<IMangaRepository> _mangaRepositoryMock;
+        private readonly CreateUserCollectionVolumeCommandHandler _createUserCollectionVolumeHandler;
 
         public CreateUserCollectionVolumenCommandHandler()
         {
             _userCollectionVolumeRepositoryMock = new Mock<IUserCollectionVolumeRepository>();
             _userCollectionRepositoryMock = new Mock<IUserCollectionRepository>();
-            _createUserCollectionVolumeHandler = new CreateUserCollectionVolumeCommandHandler(_userCollectionVolumeRepositoryMock.Object, _userCollectionRepositoryMock.Object);
+            _mangaRepositoryMock = new Mock<IMangaRepository>();
+            _createUserCollectionVolumeHandler = new CreateUserCollectionVolumeCommandHandler(_userCollectionVolumeRepositoryMock.Object,
+                                                                                              _userCollectionRepositoryMock.Object,
+                                                                                              _mangaRepositoryMock.Object);
         }
 
         [Fact]
@@ -25,6 +30,12 @@ namespace MangaTracker.Test.Application.UserCollections.Commands.CreateUserColle
         {
             var userId = Guid.NewGuid();
             var mangaId = Guid.NewGuid();
+
+            var manga = new Manga(mangaId, "Dragon Ball", "", 50, "", "");
+
+            _mangaRepositoryMock
+                .Setup(repo => repo.GetByIdAsync(mangaId))
+                .ReturnsAsync(manga);
 
             var existingCollection = new UserCollection(userId, mangaId);
 
@@ -47,6 +58,9 @@ namespace MangaTracker.Test.Application.UserCollections.Commands.CreateUserColle
 
             var result = await _createUserCollectionVolumeHandler.HandleAsync(command, CancellationToken.None);
 
+            _mangaRepositoryMock
+                .Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
+
             _userCollectionVolumeRepositoryMock
                 .Verify(repo => repo.AddAsync(It.IsAny<UserCollectionVolume>()), Times.Once);
             
@@ -63,12 +77,19 @@ namespace MangaTracker.Test.Application.UserCollections.Commands.CreateUserColle
         }
 
         [Fact]
-        public async Task Should_Return_Error_When_Collection_Does_Not_Exist()
+        public async Task Should_Return_Error_When_Manga_Does_Not_Exist()
         {
+            var mangaId = Guid.NewGuid();
+            var manga = new Manga(mangaId, "Dragon Ball", "", 50, "", "");
+
+            _mangaRepositoryMock
+                .Setup(repo => repo.GetByIdAsync(mangaId))
+                .ReturnsAsync((Manga)null);
+
             var command = new CreateUserCollectionVolumeCommand
             {
                 UserId = Guid.NewGuid(),
-                MangaId = Guid.NewGuid(),
+                MangaId = mangaId,
                 VolumeNumber = 1
             };
 
@@ -77,24 +98,74 @@ namespace MangaTracker.Test.Application.UserCollections.Commands.CreateUserColle
 
             var result = await _createUserCollectionVolumeHandler.HandleAsync(command, CancellationToken.None);
 
+            _mangaRepositoryMock
+                .Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
+
             _userCollectionVolumeRepositoryMock
                 .Verify(repo => repo.AddAsync(It.IsAny<UserCollectionVolume>()), Times.Never);
+
+            _userCollectionRepositoryMock
+                .Verify(repo => repo.GetAsync(command.UserId, command.MangaId), Times.Never);
+
+            result.Should().NotBeNull();
+            result.Success.Should().BeFalse();
+            result.Message.Should().Be("Manga not found");
+            Assert.Equal(ErrorCode.MangaNotFound, result.ErrorCode);
+
+        }
+
+        [Fact]
+        public async Task Should_Return_Error_When_Collection_Does_Not_Exist()
+        {
+            var mangaId = Guid.NewGuid();
+            var manga = new Manga(mangaId, "Dragon Ball", "", 50, "", "");
+
+            _mangaRepositoryMock
+                .Setup(repo => repo.GetByIdAsync(mangaId))
+                .ReturnsAsync(manga);
+
+            var command = new CreateUserCollectionVolumeCommand
+            {
+                UserId = Guid.NewGuid(),
+                MangaId = mangaId,
+                VolumeNumber = 1
+            };
+
+            _userCollectionRepositoryMock.Setup(repo => repo.GetAsync(command.UserId, command.MangaId))
+                .ReturnsAsync((UserCollection?)null);
+
+            var result = await _createUserCollectionVolumeHandler.HandleAsync(command, CancellationToken.None);
+
+            _mangaRepositoryMock
+                .Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
+
+            _userCollectionVolumeRepositoryMock
+                .Verify(repo => repo.AddAsync(It.IsAny<UserCollectionVolume>()), Times.Never);
+
             _userCollectionRepositoryMock
                 .Verify(repo => repo.GetAsync(command.UserId, command.MangaId), Times.Once);
 
             result.Should().NotBeNull();
             result.Success.Should().BeFalse();
-            result.Message.Should().Be("Collection not found for the specified user");
+            result.Message.Should().Be("Collection not found");
+            Assert.Equal(ErrorCode.CollectionNotFound, result.ErrorCode);
 
         }
 
         [Fact]
         public async Task Should_Return_Error_When_Volume_Already_Exists()
         {
+            var mangaId = Guid.NewGuid();
+            var manga = new Manga(mangaId, "Dragon Ball", "", 50, "", "");
+
+            _mangaRepositoryMock
+                .Setup(repo => repo.GetByIdAsync(mangaId))
+                .ReturnsAsync(manga);
+
             var command = new CreateUserCollectionVolumeCommand
             {
                 UserId = Guid.NewGuid(),
-                MangaId = Guid.NewGuid(),
+                MangaId = mangaId,
                 VolumeNumber = 1
             };
             
@@ -109,13 +180,20 @@ namespace MangaTracker.Test.Application.UserCollections.Commands.CreateUserColle
                 .ReturnsAsync(existingVolume);
             
             var result = await _createUserCollectionVolumeHandler.HandleAsync(command, CancellationToken.None);
-            
+
+            _mangaRepositoryMock
+               .Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>()), Times.Once);
+
+            _userCollectionRepositoryMock
+                .Verify(repo => repo.GetAsync(It.IsAny<Guid>(), It.IsAny<Guid>()), Times.Once);
+
             _userCollectionVolumeRepositoryMock
                 .Verify(repo => repo.AddAsync(It.IsAny<UserCollectionVolume>()), Times.Never);
             
             result.Should().NotBeNull();
             result.Success.Should().BeFalse();
-            result.Message.Should().Be("Existing Volume in user collection");
+            result.Message.Should().Be("Existing Volume in collection");
+            Assert.Equal(ErrorCode.VolumeAlreadyExists, result.ErrorCode);
         }
 
         [Fact]
@@ -135,9 +213,10 @@ namespace MangaTracker.Test.Application.UserCollections.Commands.CreateUserColle
             
             result.Should().NotBeNull();
             result.Success.Should().BeFalse();
-            result.Message.Should().Be("Error to create user collection volume");
+            result.Message.Should().Be("Error to create volume");
             result.ValidationErrors.Should().ContainSingle()
                 .Which.Should().Be("Volume Number must be greater than 0.");
+            Assert.Equal(ErrorCode.ValidationError, result.ErrorCode);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using MangaTracker.Application.Contracts.Persistence;
+using MangaTracker.Application.Errors;
 using MangaTracker.Application.Features.UserCollectionVolumenes.GetUserCollectionVolume;
 using MangaTracker.Domain.Entities;
 using Moq;
@@ -79,8 +80,9 @@ namespace MangaTracker.Test.Application.UserCollections.Query.GetUserCollectionV
                 .Verify(repo => repo.GetUserCollectionVolumes(userId, mangaId), Times.Never);
             
             result.Success.Should().BeFalse();
-            result.Message.Should().Be("User collection not found.");
+            result.Message.Should().Be("Collection not found.");
             result.getUserCollectionVolumeDto.Should().BeNull();
+            Assert.Equal(ErrorCode.CollectionNotFound, result.ErrorCode);
         }
 
         [Fact]

@@ -1,4 +1,5 @@
 ﻿using MangaTracker.Application.Contracts.Persistence;
+using MangaTracker.Application.Errors;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,19 +18,18 @@ namespace MangaTracker.Application.Features.UserCollections.DeleteUserCollection
         public async Task<DeleteUserCollectionCommandResponse> HandleAsync(DeleteUserCollectionCommand userCollections, CancellationToken cancellationToken)
         {
             var response = new DeleteUserCollectionCommandResponse();
-            // Check if exist collection in user
+
             var existCollection = await _userCollectionRepository.GetAsync(userCollections.UserId, userCollections.MangaId);
             if (existCollection == null)
             {
                 response.Success = false;
-                response.Message = "Collection not found in user";
+                response.Message = "Collection not found";
+                response.ErrorCode = ErrorCode.CollectionNotFound;
                 return response;
             }
-            // Delete collection
+
             await _userCollectionRepository.DeleteAsync(existCollection);
 
-            response.Success = true;
-            response.Message = "Deleted Collection: " + existCollection.MangaId;
             return response;
         }
     }

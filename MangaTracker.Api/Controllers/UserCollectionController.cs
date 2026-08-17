@@ -89,17 +89,17 @@ namespace MangaTracker.Api.Controllers
             var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             var deleteUserCollectionCommand = new DeleteUserCollectionCommand(userId, mangaId);
 
-            var userCollection = await _deleteUserCollectionCommandHandler.HandleAsync(deleteUserCollectionCommand, cancellationToken);
-            if (!userCollection.Success)
+            var response = await _deleteUserCollectionCommandHandler.HandleAsync(deleteUserCollectionCommand, cancellationToken);
+            if (!response.Success)
             {
-                return BadRequest(new
+                return response.ErrorCode switch
                 {
-                    userCollection.Success,
-                    userCollection.Message,
-                });
+                    ErrorCode.CollectionNotFound => NotFound(response),
+                    _ => BadRequest(response)
+                };
             }
 
-            return Ok(userCollection);
+            return NoContent();
         }
 
         [Authorize]
@@ -113,16 +113,17 @@ namespace MangaTracker.Api.Controllers
                 MangaId = mangaId
             };
 
-            var userCollectionVolumes = await _getUserCollectionVolumeQueryHandler.HandleAsync(getUserCollectionVolumesQuery,cancellationToken);
-            if (!userCollectionVolumes.Success)
+            var response = await _getUserCollectionVolumeQueryHandler.HandleAsync(getUserCollectionVolumesQuery,cancellationToken);
+            if (!response.Success)
             {
-                return BadRequest(new
+                return response.ErrorCode switch
                 {
-                    userCollectionVolumes.Success,
-                    userCollectionVolumes.Message
-                });
+                    ErrorCode.CollectionNotFound => NotFound(response),
+                    _ => BadRequest(response)
+                };
+
             }
-            return Ok(userCollectionVolumes);
+            return Ok(response);
         }
 
         [Authorize]
@@ -139,11 +140,14 @@ namespace MangaTracker.Api.Controllers
 
             if (!response.Success)
             {
-                return BadRequest(new
+                return response.ErrorCode switch
                 {
-                    response.Message,
-                    response.ValidationErrors
-                });
+                    ErrorCode.ValidationError => BadRequest(response),
+                    ErrorCode.MangaNotFound => NotFound(response),
+                    ErrorCode.CollectionNotFound => NotFound(response),
+                    ErrorCode.VolumeAlreadyExists => Conflict(response),
+                    _ => BadRequest(response)
+                };
             }
 
             return Created($"/api/userCollectionVolumes/{response.createUserCollectionVolumeDto.VolumeNumber}", response);
@@ -156,18 +160,19 @@ namespace MangaTracker.Api.Controllers
             var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             var deleteUserCollectionVolume = new DeleteUserCollectionVolumeCommand(userId, mangaId, volumeNumber);
 
-            var deletedVolume = await _deleteUserCollectionVolumeCommandHandler.HandleAsync(deleteUserCollectionVolume, cancellationToken);
+            var response = await _deleteUserCollectionVolumeCommandHandler.HandleAsync(deleteUserCollectionVolume, cancellationToken);
 
-            if (!deletedVolume.Success)
+            if (!response.Success)
             {
-                return BadRequest(new
+                return response.ErrorCode switch
                 {
-                    deletedVolume.Success,
-                    deletedVolume.Message,
-                });
+                    ErrorCode.CollectionNotFound => NotFound(response),
+                    ErrorCode.VolumeNotFound => NotFound(response),
+                    _ => BadRequest(response),
+                };
             }
 
-            return Ok(deletedVolume);
+            return NoContent();
         }
 
     }

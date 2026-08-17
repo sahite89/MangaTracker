@@ -1,4 +1,5 @@
 ﻿using MangaTracker.Application.Contracts.Persistence;
+using MangaTracker.Application.Errors;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -25,19 +26,13 @@ namespace MangaTracker.Application.Features.UserCollectionVolumenes.GetUserColle
             if(existcollection == null)
             {
                 response.Success = false;
-                response.Message = "User collection not found.";
+                response.Message = "Collection not found.";
+                response.ErrorCode = ErrorCode.CollectionNotFound;
                 return response;
             }
 
             var userCollectionVolume = await _userCollectionVolumeRepository.GetUserCollectionVolumes(query.UserId, query.MangaId);
-            if (userCollectionVolume == null)
-            {
-                response.Success = false;
-                response.Message = "User collection volume not found.";
-                return response;
-            }
-
-            response.Success = true;
+            
             response.getUserCollectionVolumeDto = new GetUserCollectionVolumeDto
             {
                 VolumeNumbers = userCollectionVolume
