@@ -323,8 +323,7 @@ MangaTracker
 ├── MangaTracker.Infrastructure
 │   ├── Persistence
 │   ├── Security
-│   └── Migrations
-│    
+│   └── Migrations   
 │
 └── MangaTracker.Tests
 ```
