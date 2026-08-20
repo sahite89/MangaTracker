@@ -1,5 +1,10 @@
 # MangaTracker
 
+[![Build and Test](https://github.com/sahite89/MangaTracker/actions/workflows/build.yml/badge.svg)](https://github.com/sahite89/MangaTracker/actions/workflows/build.yml)
+![.NET](https://img.shields.io/badge/.NET-10-512BD4?logogoColor=white)
+![SQL Server](https://img.shields.io/badge/Database-SQL%20Server-CC292ftsqlserver&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor)
+
 MangaTracker is a REST API developed with **.NET 10** that allows users to manage their manga collections and track the volumes they own.
 
 The project has been developed as a personal project with a focus on **Clean Architecture, Domain-Driven Design (DDD), CQRS, authentication, testing and containerization**.
