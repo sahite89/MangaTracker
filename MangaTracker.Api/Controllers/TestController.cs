@@ -11,7 +11,7 @@ namespace MangaTracker.Api.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok("MangaTracker funcionando");
+            return Ok("MangaTracker funcionando.");
         }
     }
 }
